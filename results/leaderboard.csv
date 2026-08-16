@@ -1,0 +1,4 @@
+detector,faults_detected,mean_lead_time_h,mean_precision,mean_recall,false_alarms/week,transients_flagged
+EWMA control chart,4/4,226.3,0.789,0.566,5.86,0
+rolling z-score,4/4,-87.4,0.762,0.504,13.32,22
+Isolation Forest,3/3,-90.3,0.546,0.016,10.83,16

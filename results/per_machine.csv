@@ -1,0 +1,16 @@
+detector,machine,detected,lead_time_h,precision,recall,false_alarms/week,flagged_transients
+EWMA control chart,compressor-01 overheating,True,181.5,0.985,0.635,6.89,0
+Isolation Forest,compressor-01 overheating,True,-241.5,0.595,0.014,6.89,4
+rolling z-score,compressor-01 overheating,True,-266.5,0.85,0.053,6.49,5
+EWMA control chart,fan-01 imbalance,True,250.7,0.994,0.771,3.24,0
+Isolation Forest,fan-01 imbalance,True,-94.3,0.8,0.019,3.24,2
+rolling z-score,fan-01 imbalance,True,-144.8,0.99,0.5,3.65,4
+EWMA control chart,pump-01 bearing wear,True,206.7,0.975,0.757,13.79,0
+Isolation Forest,pump-01 bearing wear,True,65.0,0.734,0.04,10.14,3
+rolling z-score,pump-01 bearing wear,True,69.5,0.973,0.992,19.06,3
+EWMA control chart,pump-02 bearing wear (mild),True,266.5,0.993,0.667,3.24,0
+Isolation Forest,pump-02 bearing wear (mild),False,,0.6,0.007,3.24,2
+rolling z-score,pump-02 bearing wear (mild),True,-7.7,0.995,0.973,3.65,4
+EWMA control chart,pump-03 healthy,True,,0.0,0.0,2.15,0
+Isolation Forest,pump-03 healthy,True,,0.0,0.0,30.63,5
+rolling z-score,pump-03 healthy,True,,0.0,0.0,33.74,6
