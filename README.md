@@ -115,6 +115,8 @@ The warm-up test exists because the first version of this study reported eight d
 
 **The data is simulated.** Degradation curves are modelled on published fault behaviour rather than measured from instrumented machines. A ranking computed on real run-to-failure data would differ in magnitude, though the mechanism behind the EWMA result does not depend on the simulation.
 
+**The healthy baseline has to be stationary, and that condition is doing real work.** EWMA wins above because healthy machines here sit at a level with occasional transients. Tested against a batch reactor serviced on a fixed interval, where wear climbs and resets between services, EWMA read that sawtooth as the fault it was looking for and raised false alarms on 37% of batches. Isolation Forest, which loses badly in this study, raised them on 0.8% of the same data. Written up in [reactor-plc-trainer/experiments](https://github.com/muqsithanif/reactor-plc-trainer/blob/main/experiments/README.md).
+
 **One fault at a time.** Real machines fail in combination, and a second fault developing during the first is outside the scope of this study.
 
 **Detection without diagnosis.** The system reports that something has changed and does not identify the component to replace. Separating bearing wear from imbalance requires spectral analysis at a sampling rate far above the ten-minute interval used here.
