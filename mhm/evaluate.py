@@ -30,6 +30,7 @@ class Evaluation:
     detector: str
     machine: str
     threshold: float
+    has_fault: bool
     detected: bool
     lead_time_hours: float | None      # before fault onset ... None if missed
     precision: float
@@ -104,7 +105,6 @@ def evaluate(
     onset = int(np.argmax(faulty)) if faulty.any() else len(faulty)
     alarm_at = _first_sustained(flags, consecutive)
 
-    detected = alarm_at is not None and (not faulty.any() or alarm_at >= 0)
     lead_time = None
     if faulty.any() and alarm_at is not None:
         # Positive means the alarm came before onset; the usual case is a
@@ -127,6 +127,7 @@ def evaluate(
         detector=detector_name,
         machine=machine,
         threshold=threshold,
+        has_fault=bool(faulty.any()),
         detected=alarm_at is not None,
         lead_time_hours=lead_time,
         precision=precision,
@@ -147,7 +148,10 @@ def leaderboard(evaluations: list[Evaluation]) -> pd.DataFrame:
     rows = []
     for name in dict.fromkeys(e.detector for e in evaluations):
         subset = [e for e in evaluations if e.detector == name]
-        with_fault = [e for e in subset if e.lead_time_hours is not None]
+        # The denominator is every machine that develops a fault. Filtering on
+        # lead time instead would drop the faults a detector missed and report
+        # a miss as a clean sweep.
+        with_fault = [e for e in subset if e.has_fault]
         leads = [e.lead_time_hours for e in with_fault if e.lead_time_hours is not None]
         rows.append({
             "detector": name,

@@ -62,6 +62,8 @@ The data is simulated rather than taken from a public run-to-failure dataset, an
 
 Positive lead time means the alarm arrived before the fault began. Negative means it fired that many hours into the failure, when the machine was already degrading.
 
+Mean lead time is averaged over the faults each detector caught. Isolation Forest missed the mild bearing fault on pump-02 entirely, so its −90 h covers three machines, not four.
+
 EWMA gives about nine days of warning. The other two respond only once degradation is well under way, by which point the vibration is obvious without a monitor at all.
 
 ### Why the simplest method wins
@@ -130,7 +132,7 @@ Writes per-machine plots, `per_machine.csv`, and `leaderboard.csv` into `results
 pytest -q
 ```
 
-Thirty-nine tests. The ones worth naming exist because something specific went wrong.
+Forty tests. The ones worth naming exist because something specific went wrong.
 
 - **A single sample over the threshold is not an alarm, six consecutive samples are.** Without that rule, every transient registers as a detection.
 - **A warm-up period with no data is neither a flag nor a clean bill of health.** Filling it with zeros records unscored time as confirmed-healthy; filling it forward invents an alarm on the first sample.
@@ -138,6 +140,7 @@ Thirty-nine tests. The ones worth naming exist because something specific went w
 - **Features cannot see the future.** Truncating a run must leave every feature computed before the cut unchanged.
 - **A ratio would not have worked.** The affine-versus-proportional property above, encoded so it is not simplified away later.
 - **A spike decays while a shift persists.** Duration rather than peak height is the EWMA property that separates them.
+- **A missed fault stays in the denominator.** The leaderboard once filtered on lead time, which drops misses, and reported Isolation Forest as 3/3 instead of 3/4.
 
 That second test exists because the first version of this study reported eight days of lead time it had not earned. Missing values during warm-up were filled backward with a number above the fitted mean, the chart alarmed on the very first sample, and the evaluator scored the entire pre-fault period as early detection. The figure looked plausible, which is exactly what made it worth guarding against.
 

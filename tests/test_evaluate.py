@@ -2,7 +2,7 @@ import numpy as np
 import pandas as pd
 import pytest
 
-from mhm.evaluate import _first_sustained, evaluate, threshold_from_healthy
+from mhm.evaluate import _first_sustained, evaluate, leaderboard, threshold_from_healthy
 from mhm.simulate import HOURS_PER_SAMPLE
 
 
@@ -108,3 +108,20 @@ def test_threshold_ignores_nan_warmup():
 def test_threshold_needs_something_to_work_with():
     with pytest.raises(ValueError):
         threshold_from_healthy(np.full(100, np.nan), 0.3)
+
+
+def test_leaderboard_counts_missed_faults_in_the_denominator():
+    # A missed fault has no lead time. The first version of the leaderboard
+    # filtered on lead time, so a detector that caught 3 of 4 faults was
+    # reported as 3/3.
+    n, onset = 200, 100
+    caught = np.zeros(n)
+    caught[70:] = 10.0
+    evaluations = [
+        evaluate("d", "caught", caught, truth_frame(n, onset), threshold=5.0),
+        evaluate("d", "missed", np.zeros(n), truth_frame(n, onset), threshold=5.0),
+        evaluate("d", "healthy", np.zeros(n), truth_frame(n), threshold=5.0),
+    ]
+    row = leaderboard(evaluations).iloc[0]
+    assert row["faults_detected"] == "1/2"
+    assert row["mean_lead_time_h"] == pytest.approx(30 * HOURS_PER_SAMPLE)
